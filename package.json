@@ -25,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/gren-lang/gren-make-static/issues"
   },
-  "homepage": "https://github.com/gren-lang/gren-make-static#readme"
+  "homepage": "https://github.com/gren-lang/gren-make-static#readme",
+  "dependencies": {
+    "postject": "^1.0.0-alpha.6"
+  }
 }

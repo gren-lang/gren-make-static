@@ -1,14 +1,19 @@
 {
-  "$schema":  "https://raw.githubusercontent.com/jetify-com/devbox/0.14.2/.schema/devbox.schema.json",
-  "packages": ["nodejs@20"],
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.14.2/.schema/devbox.schema.json",
+  "packages": [
+    "nodejs@20",
+    "nodePackages.prettier@latest"
+  ],
   "shell": {
     "init_hook": [
       "echo 'Welcome to devbox!' > /dev/null"
     ],
     "scripts": {
       "test": [
-        "echo \"Error: no test specified\" && exit 1"
-      ]
+        "npm test"
+      ],
+      "format":       "prettier -w \"!**/*.json\" .",
+      "format:check": "prettier -c \"!**/*.json\" ."
     }
   }
 }

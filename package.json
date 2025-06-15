@@ -1,0 +1,19 @@
+{
+  "name": "gren-make-static",
+  "version": "1.0.0",
+  "description": "Create static executables out of Gren applications.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gren-lang/gren-make-static.git"
+  },
+  "author": "Robin Heggelund Hansen",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/gren-lang/gren-make-static/issues"
+  },
+  "homepage": "https://github.com/gren-lang/gren-make-static#readme"
+}

@@ -2,10 +2,20 @@
   "name": "gren-make-static",
   "version": "1.0.0",
   "description": "Create static executables out of Gren applications.",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "index.js"
+  ],
+  "bin": {
+    "gren": "index.js"
+  },
+  "keywords": [
+    "gren",
+    "lang",
+    "language"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gren-lang/gren-make-static.git"

@@ -13,26 +13,42 @@ const cliOpts = args.filter((arg) => arg.startsWith("-"));
 const cliArgs = args.filter((arg) => !arg.startsWith("-"));
 
 if (cliOpts.includes("-h") || cliOpts.includes("--help")) {
-  console.log("help");
-} else if (cliArgs.length !== 1) {
-  console.log("help");
+  printHelp();
+} else if (cliArgs.length !== 2) {
+  printHelp();
 } else if (cliOpts.includes("-s") || cliOpts.includes("--snapshot")) {
-  console.log("snapshot");
+  makeSnapshot(cliArgs[0], cliArgs[1]);
 } else {
-  console.log("executable");
+  makeExecutable(cliArgs[0], cliArgs[1]);
 }
 
-async function makeSnapshot(output) {
-  const jsBuildPath = output + ".tmp";
-  const blobPath = output + ".blob";
+function printHelp() {
+  console.log(`gren-make-static
+
+Use this program to convert Gren applications into static executables.
+
+The Gren application has to target the node platform, be compiled to a file without the .js extension and cannot make use of ports.
+
+Usage:
+
+    gren-make-static <input-file> <executable>
+
+You can also generate a snapshot, which can be passed to node.js to improve startup time:
+
+    gren-make-static --snapshot <input-file> <snapshot-file>
+`);
+}
+
+async function makeSnapshot(input, output) {
+  const jsBuildPath = input + ".tmp";
 
   try {
-    await makeSnapshotCompatible(output, jsBuildPath);
+    await makeSnapshotCompatible(input, jsBuildPath);
 
     // Generate the snapshot
     cp.execFileSync(nodePath, [
-      "--snapshot-blob-path",
-      blobPath,
+      "--snapshot-blob",
+      output,
       "--build-snapshot",
       jsBuildPath,
     ]);
@@ -65,14 +81,14 @@ async function makeSnapshotCompatible(input, target) {
   `,
   );
 
-  await fs.writeFile(jsBuildPath, snapshotCompatibleSrc);
+  await fs.writeFile(target, snapshotCompatibleSrc);
 }
 
-async function makeExecutable(output) {
-  const jsBuildPath = output + ".tmp";
-  const blobPath = output + ".blob";
+async function makeExecutable(input, target) {
+  const jsBuildPath = input + ".tmp";
+  const blobPath = input + ".tmp.blob";
 
-  const seaConfigPath = output + ".sea.config";
+  const seaConfigPath = input + ".sea.config";
   const seaConfig = {
     main: jsBuildPath,
     output: blobPath,
@@ -80,10 +96,10 @@ async function makeExecutable(output) {
     useSnapshot: true,
   };
 
-  const binPath = isWin ? output + ".node.exe" : output + ".node";
+  const binPath = isWin && !target.endsWith(".exe") ? target + ".exe" : target;
 
   try {
-    await makeSnapshotCompatible(output, jsBuildPath);
+    await makeSnapshotCompatible(input, jsBuildPath);
 
     // Generate the snapshot
     await fs.writeFile(seaConfigPath, JSON.stringify(seaConfig));
@@ -110,16 +126,10 @@ async function makeExecutable(output) {
       cp.execFileSync("codesign", ["--sign", "-", binPath]);
     }
 
-    const outputPath = isWin ? jsBuildPath + ".exe" : jsBuildPath;
-    await fs.rename(binPath, outputPath);
-
-    if (isWin) {
-      await fs.rm(jsBuildPath);
-    }
-
     console.log("Done!");
   } catch (e) {
     console.error("Failed to create static executable", e);
+    await fs.rm(binPath);
   } finally {
     // cleanup
     await fs.rm(jsBuildPath);

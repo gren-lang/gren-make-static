@@ -9,7 +9,7 @@
     "index.js"
   ],
   "bin": {
-    "gren": "index.js"
+    "gren-make-static": "index.js"
   },
   "keywords": [
     "gren",

@@ -24,3 +24,6 @@ jobs:
 
       - name: Verify formatting
         run: devbox run format:check
+
+      - name: Test
+        run: devbox run test

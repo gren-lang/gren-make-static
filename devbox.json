@@ -9,11 +9,13 @@
       "echo 'Welcome to devbox!' > /dev/null"
     ],
     "scripts": {
-      "test": [
-        "npm test"
-      ],
       "format":       "prettier -w \"!**/*.json\" .",
-      "format:check": "prettier -c \"!**/*.json\" ."
+      "format:check": "prettier -c \"!**/*.json\" .",
+      "test": [
+        "node index.js compiler_snapshot compiler",
+        "./compiler --version",
+        "rm ./compiler"
+      ]
     }
   }
 }
